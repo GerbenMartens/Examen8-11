@@ -20,12 +20,12 @@ angular.module('Movies', ['ngRoute'])
 	    		
 	    		actorSrv.getActor(actorName).then(function(data){
 	    			console.log(data);
-		    		var movies = saveSrv.getObject('actor');
+		    		var movies = saveSrv.getObject('filmography.actor');
 		    		console.log(movies);
 		    		if(Object.keys(movies).length == 0){		    			
 		    				console.log(data);
 		    				movies = data;
-		    				saveSrv.setObject('actor', data);
+		    				saveSrv.setObject('filmography.actor', data);
 		    				$scope.movies = movies.data;		    			
 		    		}
 		    		else {
