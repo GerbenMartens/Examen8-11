@@ -72,13 +72,10 @@ angular.module('Movies', ['ngRoute'])
     .service('saveSrv', function($window, $http){
 		  this.setObject = function(key, value){
 			  $window.localStorage[key] = JSON.stringify(value);
-			  //Save in CouchDB
-			  
-			  //$http.put('../../' + key, value);
 		  };
 		  
 		  this.getObject = function(key){
-			  return JSON.parse($window.localStorage[key] || '{}');
+			  return JSON.parse($window.localStorage.getItem(key));
 		  };
 		  
 		  
