@@ -110,3 +110,31 @@ function createDoc(actorName, movies){
 			}
 		});
 	}
+
+function buildOutput(view, param){
+	$('#output').html('The movies the actor has been in are : ');
+	$.ajax({
+		type:	'GET',
+		url:	'../../_all_docs?include_docs=true',
+		contentType: 'application/json',
+		async:	true,		
+		succes:	function(data){
+			console.log('It works');
+			var arr = JSON.parse(data).rows;
+			var htmlString = '<table>';
+			for(var i=0; i<arr.length; i++){
+					var doc = arr[i].doc;
+					htmlString += '<tr><td>' + doc.actorName + '</td><td>' + doc.movies + '</td></tr>';
+			}
+			htmlString += '</table>';
+			console.log(htmlString);
+			$('#output').html(htmlString);
+			
+		},
+		
+		error:	function(XMLHttpRequest, textStatus, errorThrown){
+			console.log('Something went wrong');
+			console.log(errorThrown)
+		}
+	});
+}
