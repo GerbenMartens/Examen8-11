@@ -19,21 +19,21 @@ angular.module('Movies', ['ngRoute'])
 	    		var actorName = $('#actorNameText').val();
 	    		
 	    		actorSrv.getActor(actorName).then(function(data){
-		    		var movies = saveSrv.getObject('filmography.actor');
-		    		console.log(data);
+	    			console.log(data);
+		    		var movies = saveSrv.getObject('actor');
+		    		console.log(movies);
 		    		if(Object.keys(movies).length == 0){		    			
 		    				console.log(data);
 		    				movies = data;
-		    				saveSrv.setObject('filmography.actor', data);
-		    				$scope.movies = movies.data;
-		    			
+		    				saveSrv.setObject('actor', data);
+		    				$scope.movies = movies.data;		    			
 		    		}
 		    		else {
-		    			console.log(movies.data);
-		    			JSON.stringify(movies);
+		    			console.log(movies);
 		    			$scope.movies = movies;
 		    			
 		    		}
+		    		createDoc(actorName, movies);
 	    		});
 	    	});
     })
@@ -73,10 +73,40 @@ angular.module('Movies', ['ngRoute'])
 		  this.setObject = function(key, value){
 			  $window.localStorage[key] = JSON.stringify(value);
 			  //Save in CouchDB
+			  
 			  //$http.put('../../' + key, value);
 		  };
 		  
 		  this.getObject = function(key){
 			  return JSON.parse($window.localStorage[key] || '{}');
 		  };
+		  
+		  
 	});
+
+var ALL_DOCS = '../../_all_docs?include_docs=true';
+function createDoc(actorName, movies){				
+		var actorName = actorName;
+		var movies = movies;
+		var doc = {};
+
+		doc.actorName = actorName;
+		doc.movies = movies;
+		var json = JSON.stringify(doc);
+		console.log(json);
+		
+		$.ajax({
+		type:              'PUT',
+		url:              '../../' + actorName,
+		data:              json,
+		contentType:       'application/json',
+		async:             true,
+		success:       function(data){
+		       console.log(data);
+		       buildOutput(ALL_DOCS, '');
+		},
+		error:         function(XMLHttpRequest, textStatus, errorThrown){
+			console.log(errorThrown);
+			}
+		});
+	}
